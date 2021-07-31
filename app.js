@@ -8,22 +8,28 @@ app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 app.use(function (req, res, next) {
-  if (req.url !== '/favicon.ico') {
-    const reqTime = new Date()
-    const time =
-      reqTime.getFullYear() +
-      '/' +
-      reqTime.getMonth().toString().padStart(2, '0') +
-      '/' +
-      reqTime.getDate().toString().padStart(2, '0') +
-      ' ' +
-      reqTime.getHours().toString().padStart(2, '0') +
-      ':' +
-      reqTime.getMinutes().toString().padStart(2, '0') +
-      ':' +
-      reqTime.getSeconds().toString().padStart(2, '0')
+  const reqTime = new Date()
+  const time =
+    reqTime.getFullYear() +
+    '/' +
+    reqTime.getMonth().toString().padStart(2, '0') +
+    '/' +
+    reqTime.getDate().toString().padStart(2, '0') +
+    ' ' +
+    reqTime.getHours().toString().padStart(2, '0') +
+    ':' +
+    reqTime.getMinutes().toString().padStart(2, '0') +
+    ':' +
+    reqTime.getSeconds().toString().padStart(2, '0')
 
-    console.log(`${time} | ${req.method} from ${req.originalUrl}`)
+  if (req.url !== '/favicon.ico') {
+    res.on('finish', () => {
+      const resTime = new Date()
+      const timeSpent = resTime - reqTime
+      console.log(
+        `${time} | ${req.method} from ${req.originalUrl} | total time: ${timeSpent}ms`
+      )
+    })
   }
   next()
 })
